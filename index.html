@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML Data Scalper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="panel hero">
+        <div>
+          <p class="eyebrow">Binary-Free Prototype</p>
+          <h1>HTML Data Scalper</h1>
+          <p class="muted">Upload an HTML file, extract structured rows, preview and clean them, then push to Google Sheets.</p>
+        </div>
+      </header>
+
+      <section class="panel upload-panel">
+        <h2>1) Upload HTML</h2>
+        <div id="dropZone" class="drop-zone" role="button" tabindex="0" aria-label="Drop HTML file here">
+          <p><strong>Drop an .html file here</strong> or choose one manually.</p>
+          <input id="fileInput" type="file" accept=".html,text/html" />
+        </div>
+        <div class="upload-meta">
+          <p>Selected file: <span id="fileName">None</span></p>
+          <button id="extractBtn" class="btn primary" type="button">Extract Data</button>
+        </div>
+      </section>
+
+      <section class="panel settings-panel">
+        <h2>2) Google Sheets Endpoint</h2>
+        <label class="field" for="appsScriptUrl">
+          <span>Apps Script Web App URL</span>
+          <input id="appsScriptUrl" type="url" placeholder="https://script.google.com/macros/s/AK.../exec" />
+        </label>
+      </section>
+
+      <section class="panel summary-panel" aria-live="polite">
+        <article>
+          <p class="muted">Total rows</p>
+          <h3 id="totalRows">0</h3>
+        </article>
+        <article>
+          <p class="muted">Filtered rows</p>
+          <h3 id="filteredRows">0</h3>
+        </article>
+        <article>
+          <p class="muted">Extracted at</p>
+          <h3 id="latestExtractedAt">—</h3>
+        </article>
+      </section>
+
+      <section class="panel preview-panel">
+        <div class="toolbar">
+          <h2>3) Preview Rows</h2>
+          <div class="toolbar-controls">
+            <input id="searchInput" type="search" placeholder="Filter by section, title, value, link..." />
+            <button id="sendBtn" class="btn success" type="button">Send to Google Sheets</button>
+          </div>
+        </div>
+
+        <div id="statusBox" class="status" hidden></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Source File</th>
+                <th>Page Title</th>
+                <th>Section</th>
+                <th>Item Title</th>
+                <th>Item Value</th>
+                <th>Link</th>
+                <th>Meta Description</th>
+                <th>Extracted Text</th>
+                <th>Extracted At</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="rowsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
