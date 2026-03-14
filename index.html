@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Scalping Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero card">
+        <div>
+          <p class="eyebrow">Prototype</p>
+          <h1>Data Scalping Dashboard</h1>
+          <p class="subtext">
+            Quickly collect and scan small result sets from selected categories.
+          </p>
+        </div>
+      </header>
+
+      <section class="controls card">
+        <div class="control-grid">
+          <label class="field">
+            <span>Query / Source / Category</span>
+            <input
+              id="queryInput"
+              type="text"
+              placeholder="e.g. AI tools, product updates, finance"
+              autocomplete="off"
+            />
+          </label>
+
+          <button id="collectBtn" class="btn-primary" type="button">
+            Collect Data
+          </button>
+        </div>
+      </section>
+
+      <section class="summary-grid" aria-live="polite">
+        <article class="summary card">
+          <p>Total Results</p>
+          <h2 id="totalResults">0</h2>
+        </article>
+        <article class="summary card">
+          <p>Latest Timestamp</p>
+          <h2 id="latestTimestamp">—</h2>
+        </article>
+        <article class="summary card">
+          <p>Active Tags</p>
+          <h2 id="activeTags">0</h2>
+        </article>
+      </section>
+
+      <section class="results-panel card">
+        <div class="results-toolbar">
+          <h3>Results</h3>
+          <div class="toolbar-filters">
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="Search title, source, summary, tag"
+            />
+            <select id="tagFilter" aria-label="Filter by tag">
+              <option value="all">All Tags</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="statusBanner" class="status-banner" hidden></div>
+
+        <div id="resultsGrid" class="results-grid"></div>
+      </section>
+    </main>
+
+    <template id="resultCardTemplate">
+      <article class="result-card">
+        <div class="result-top">
+          <h4 class="result-title"></h4>
+          <span class="result-tag"></span>
+        </div>
+        <p class="result-source"></p>
+        <p class="result-summary"></p>
+        <p class="result-timestamp"></p>
+      </article>
+    </template>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
