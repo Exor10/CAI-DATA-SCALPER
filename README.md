@@ -1,97 +1,142 @@
-# Data Scalping Dashboard (Prototype)
+# HTML Data Scalper
 
-A lightweight, dark-themed dashboard prototype for quickly collecting and reviewing small sets of data.
+A simple, polished, **binary-free** web app for extracting structured data from local `.html` files directly in the browser, previewing/editing rows, and sending those rows to Google Sheets through a Google Apps Script web app endpoint.
 
 ## Project Structure
 
 ```text
 CAI-DATA-SCALPER/
-├── index.html          # Dashboard layout and semantic structure
-├── styles.css          # Dark theme, responsive UI styles
-├── src/
-│   ├── app.js          # UI behavior, state, filtering, summary, status handling
-│   └── mockData.js     # Mock data generation for simulated collection
-└── README.md           # Setup and usage notes
+├── index.html
+├── styles.css
+├── app.js
+├── extractor.js
+├── config.sample.js
+├── google-apps-script/
+│   └── Code.gs
+└── README.md
 ```
 
-## Features
+## Purpose
 
-- Clean landing/dashboard interface
-- Query/source/category input field
-- Simulated "Collect Data" action
-- Polished results card grid
-- Summary widgets:
-  - total results
-  - latest timestamp
-  - active tags
-- Filters:
-  - search text filter
-  - tag dropdown filter
-- State handling:
-  - loading state
-  - empty state
-  - error state
-  - no-filter-match state
-- Responsive layout for desktop/tablet/mobile
+- Quickly inspect and convert HTML content into row-based data.
+- Keep workflow beginner-friendly and demo-ready.
+- Avoid backend complexity and heavy dependencies.
+- Stay static-host friendly (GitHub Pages compatible).
 
-## Setup (Simple)
+## How HTML Upload Works
 
-No build step is required.
+1. User uploads (or drags/drops) a `.html` file.
+2. Browser reads file locally using `FileReader`.
+3. HTML text is parsed in-browser using `DOMParser`.
+4. Extracted rows are normalized and shown in preview table.
+5. User can search/filter and remove rows.
+6. User sends final row set to Google Sheets endpoint.
 
-### Option A: Open directly
-Open `index.html` in a browser.
+## How Extraction Works
 
-### Option B: Run a tiny local server (recommended)
+Extraction is designed for general HTML and tries to capture common useful structures:
+
+- page title (`<title>`)
+- headings (`h1`-`h6`)
+- links (`a[href]`)
+- tables (`table` rows + inferred headers)
+- meta description (`meta[name="description"]`)
+- text blocks (`p`, `li`, `blockquote`)
+
+Rows are normalized to this shape:
+
+- `source_file`
+- `page_title`
+- `section`
+- `item_title`
+- `item_value`
+- `link`
+- `meta_description`
+- `extracted_text`
+- `extracted_at`
+
+## Google Sheets Integration (Apps Script)
+
+This project intentionally avoids frontend OAuth complexity.
+
+Instead, the frontend sends JSON via `fetch()` to a deployed Google Apps Script web app URL:
+
+```json
+{
+  "rows": [
+    {
+      "source_file": "example.html",
+      "page_title": "...",
+      "section": "heading",
+      "item_title": "h1",
+      "item_value": "...",
+      "link": "",
+      "meta_description": "...",
+      "extracted_text": "...",
+      "extracted_at": "2026-01-01T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+## Setup
+
+No build tooling required.
+
+### Local run
+
+Open `index.html` directly, or serve locally:
 
 ```bash
 python3 -m http.server 4173
 ```
 
-Then open:
+Then open `http://localhost:4173`.
 
-```text
-http://localhost:4173
-```
+## Deploy Frontend on GitHub Pages
 
-## How to Use
+1. Push repository to GitHub.
+2. Open repository **Settings → Pages**.
+3. Under **Build and deployment**, choose:
+   - Source: **Deploy from a branch**
+   - Branch: `main` (or your branch), folder `/ (root)`
+4. Save and wait for deployment URL.
 
-1. Enter a query/source/category (e.g. `AI tools`).
-2. Click **Collect Data**.
-3. Review results in cards.
-4. Use search + tag filter to narrow down results.
+Because this app is static HTML/CSS/JS, no backend is needed.
 
-Tip: entering a query containing `error` triggers a simulated error state.
+## Create a Google Sheet + Apps Script Web App
 
-## Replacing Mock Data with Real Data Later
+1. Create a new Google Sheet.
+2. In the Sheet, open **Extensions → Apps Script**.
+3. Paste contents from `google-apps-script/Code.gs`.
+4. Adjust `SHEET_NAME` if needed.
+5. Click **Deploy → New deployment**.
+6. Select **Web app**.
+7. Set:
+   - Execute as: **Me**
+   - Who has access: **Anyone** (or appropriate option)
+8. Deploy and copy the web app URL.
 
-The code is intentionally prepared for API/scraping integration:
+## Where to Paste the Apps Script URL
 
-- Replace logic in `runCollection()` in `src/app.js`.
-- Keep existing state/render flow as-is.
+In the app UI, paste your URL in the **Apps Script Web App URL** field.
 
-### Current mock section
+Optional:
+- Copy `config.sample.js` to `config.js`
+- set `window.APP_CONFIG.appsScriptUrl = 'YOUR_URL'`
+- include `config.js` in `index.html` before `app.js` if you want a preset URL.
 
-```js
-await sleep(850);
-state.allResults = createMockResults(query);
-```
+## Notes on Validation & States
 
-### Future real fetch section (example)
+The app includes:
 
-```js
-const response = await fetch(`/api/collect?q=${encodeURIComponent(query)}`);
-if (!response.ok) throw new Error('Collection failed');
-state.allResults = await response.json();
-```
+- loading state (during extraction/send)
+- success state (after extraction/send)
+- empty state (no rows yet)
+- error state (bad file, malformed HTML, network errors)
+- row deletion before submission
 
-Expected result item shape:
+## Binary-Free Guarantee
 
-```js
-{
-  title: 'string',
-  source: 'string',
-  summary: 'string',
-  timestamp: 'ISO string',
-  tag: 'string'
-}
-```
+This repository contains **text files only**.
+No PNG, JPG, ICO, PDF, ZIP, or any other binary asset is included.

@@ -3,93 +3,90 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Data Scalping Dashboard</title>
+    <title>HTML Data Scalper</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="app-shell">
-      <header class="hero card">
+    <main class="container">
+      <header class="panel hero">
         <div>
-          <p class="eyebrow">Prototype</p>
-          <h1>Data Scalping Dashboard</h1>
-          <p class="subtext">
-            Quickly collect and scan small result sets from selected categories.
-          </p>
+          <p class="eyebrow">Binary-Free Prototype</p>
+          <h1>HTML Data Scalper</h1>
+          <p class="muted">Upload an HTML file, extract structured rows, preview and clean them, then push to Google Sheets.</p>
         </div>
       </header>
 
-      <section class="controls card">
-        <div class="control-grid">
-          <label class="field">
-            <span>Query / Source / Category</span>
-            <input
-              id="queryInput"
-              type="text"
-              placeholder="e.g. AI tools, product updates, finance"
-              autocomplete="off"
-            />
-          </label>
-
-          <button id="collectBtn" class="btn-primary" type="button">
-            Collect Data
-          </button>
+      <section class="panel upload-panel">
+        <h2>1) Upload HTML</h2>
+        <div id="dropZone" class="drop-zone" role="button" tabindex="0" aria-label="Drop HTML file here">
+          <p><strong>Drop an .html file here</strong> or choose one manually.</p>
+          <input id="fileInput" type="file" accept=".html,text/html" />
+        </div>
+        <div class="upload-meta">
+          <p>Selected file: <span id="fileName">None</span></p>
+          <button id="extractBtn" class="btn primary" type="button">Extract Data</button>
         </div>
       </section>
 
-      <section class="summary-grid" aria-live="polite">
-        <article class="summary card">
-          <p>Total Results</p>
-          <h2 id="totalResults">0</h2>
+      <section class="panel settings-panel">
+        <h2>2) Google Sheets Endpoint</h2>
+        <label class="field" for="appsScriptUrl">
+          <span>Apps Script Web App URL</span>
+          <input id="appsScriptUrl" type="url" placeholder="https://script.google.com/macros/s/AK.../exec" />
+        </label>
+      </section>
+
+      <section class="panel summary-panel" aria-live="polite">
+        <article>
+          <p class="muted">Total rows</p>
+          <h3 id="totalRows">0</h3>
         </article>
-        <article class="summary card">
-          <p>Latest Timestamp</p>
-          <h2 id="latestTimestamp">—</h2>
+        <article>
+          <p class="muted">Filtered rows</p>
+          <h3 id="filteredRows">0</h3>
         </article>
-        <article class="summary card">
-          <p>Active Tags</p>
-          <h2 id="activeTags">0</h2>
+        <article>
+          <p class="muted">Extracted at</p>
+          <h3 id="latestExtractedAt">—</h3>
         </article>
       </section>
 
-      <section class="results-panel card">
-        <div class="results-toolbar">
-          <h3>Results</h3>
-          <div class="toolbar-filters">
-            <input
-              id="searchInput"
-              type="search"
-              placeholder="Search title, source, summary, tag"
-            />
-            <select id="tagFilter" aria-label="Filter by tag">
-              <option value="all">All Tags</option>
-            </select>
+      <section class="panel preview-panel">
+        <div class="toolbar">
+          <h2>3) Preview Rows</h2>
+          <div class="toolbar-controls">
+            <input id="searchInput" type="search" placeholder="Filter by section, title, value, link..." />
+            <button id="sendBtn" class="btn success" type="button">Send to Google Sheets</button>
           </div>
         </div>
 
-        <div id="statusBanner" class="status-banner" hidden></div>
+        <div id="statusBox" class="status" hidden></div>
 
-        <div id="resultsGrid" class="results-grid"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Source File</th>
+                <th>Page Title</th>
+                <th>Section</th>
+                <th>Item Title</th>
+                <th>Item Value</th>
+                <th>Link</th>
+                <th>Meta Description</th>
+                <th>Extracted Text</th>
+                <th>Extracted At</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="rowsBody"></tbody>
+          </table>
+        </div>
       </section>
     </main>
 
-    <template id="resultCardTemplate">
-      <article class="result-card">
-        <div class="result-top">
-          <h4 class="result-title"></h4>
-          <span class="result-tag"></span>
-        </div>
-        <p class="result-source"></p>
-        <p class="result-summary"></p>
-        <p class="result-timestamp"></p>
-      </article>
-    </template>
-
-    <script type="module" src="./src/app.js"></script>
+    <script type="module" src="./app.js"></script>
   </body>
 </html>
